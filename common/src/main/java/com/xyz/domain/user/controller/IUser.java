@@ -24,7 +24,7 @@ public interface IUser {
     @ApiOperation(value = "新增用户", notes = "新增用户")
     ResponseResult addUser(AddUserDTO addUserDTO);
 
-    @ApiOperation(value = "修改用户", notes = "修改用户")
+    @ApiOperation(value = "修改用户信息", notes = "修改用户")
     ResponseResult editUser(EditUserDTO editUserDTO);
 
     @ApiOperation(value = "修改用户密码", notes = "修改用户密码")

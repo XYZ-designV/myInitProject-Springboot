@@ -4,24 +4,30 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @ApiModel(value = "EditUserDTO - 修改用户数据", description = "修改用户数据")
 @Data
 public class EditUserDTO {
     /**
      * 主键
      */
+    @NotNull(message = "用户id不能为空")
     @ApiModelProperty(value = "用户主键Id", required = true)
     private Long id;
 
     /**
      * 用户名
      */
+    @NotBlank(message = "用户名不能为空")
     @ApiModelProperty(value = "用户名", required = true)
     private String userName;
 
     /**
      * 昵称
      */
+    @NotBlank(message = "用户昵称不能为空")
     @ApiModelProperty(value = "昵称", required = true)
     private String nickName;
 

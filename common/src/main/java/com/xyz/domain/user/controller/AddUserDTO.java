@@ -3,6 +3,9 @@ package com.xyz.domain.user.controller;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @ApiModel(value = "AddUserDTO - 用户新增数据", description = "用户新增数据")
 @Data
@@ -11,18 +14,22 @@ public class AddUserDTO {
     /**
      * 用户名
      */
+    @NotBlank(message = "用户名不能为空")
     @ApiModelProperty(value = "用户名", required = true)
     private String userName;
 
     /**
      * 昵称
      */
+    @NotBlank(message = "用户昵称不能为空")
     @ApiModelProperty(value = "昵称", required = true)
     private String nickName;
 
-        /**
+    /**
      * 密码
      */
+    @NotNull(message = "密码不能为空")
+    @Size(min = 6, max = 20, message = "用户密码应该大于或等于6位,且小于等于20位")
     @ApiModelProperty(value = "密码", required = true)
     private String password;
 

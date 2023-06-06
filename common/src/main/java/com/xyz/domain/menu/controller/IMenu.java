@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
-@Api(tags = "菜单表相关接口" )
+@Api(tags = "菜单(权限)表相关接口" )
 public interface IMenu {
     @ApiOperation(value = "查询所有菜单")
     @ApiImplicitParams({

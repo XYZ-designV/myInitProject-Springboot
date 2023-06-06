@@ -5,6 +5,10 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.apache.ibatis.annotations.Update;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @ApiModel(value = "MenuDTO - 菜单数据", description = "菜单数据")
 @Data
@@ -18,12 +22,14 @@ public class MenuDTO {
     /**
      * 菜单名称
      */
+    @NotBlank(message = "菜单名称不能为空" )
     @ApiModelProperty(value = "菜单名称", required = true)
     private String menuName;
 
     /**
      * 父菜单ID
      */
+    @NotNull(message = "父菜单ID不能为空" )
     @ApiModelProperty(value = "父菜单ID", required = true)
     private Long parentId;
 
@@ -36,18 +42,21 @@ public class MenuDTO {
     /**
      * 路由地址
      */
+    @NotBlank(message = "路由地址不能为空" )
     @ApiModelProperty(value = "路由地址", required = true)
     private String path;
 
     /**
      * 组件路径
      */
-    @ApiModelProperty(value = "主键路径", required = true)
+    @NotBlank(message = "组件路径不能为空" )
+    @ApiModelProperty(value = "组件路径", required = true)
     private String component;
 
     /**
      * 菜单类型（M目录 C菜单 F按钮）
      */
+    @NotBlank(message = "菜单类型不能为空" )
     @ApiModelProperty(value = "菜单类型", required = true)
     private String menuType;
 

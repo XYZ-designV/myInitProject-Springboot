@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 @Data
@@ -13,12 +14,14 @@ public class AddRoleDTO {
     /**
      * 角色名称
      */
+    @NotBlank(message = "角色名称不能为空")
     @ApiModelProperty(value = "角色名称", required = true)
     private String roleName;
 
     /**
      * 角色权限字符串
      */
+    @NotBlank(message = "角色权限字符不能为空")
     @ApiModelProperty(value = "角色权限字符串", required = true)
     private String roleKey;
 

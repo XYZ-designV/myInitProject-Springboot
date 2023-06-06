@@ -5,12 +5,14 @@ import com.xyz.constants.AppHttpCodeEnum;
 import com.xyz.domain.common.ResponseResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import javax.validation.ConstraintDeclarationException;
 import java.util.List;
 
 /**
@@ -31,12 +33,11 @@ public class GlobalExceptionHandler {
     }
 
     // get请求的对象参数校验异常
-    @ExceptionHandler(ConstraintDeclarationException.class)
-    public ResponseResult controllerGetExceptionHandler(ConstraintDeclarationException e) {
-        // TODO get参数校验
-        System.out.println(e);
-        log.error("get请求的对象参数校验异常处理 -->" + e.getMessage(),e);
-        return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR, e.getMessage());
+    @ExceptionHandler(BindException.class)
+    public ResponseResult controllerGetExceptionHandler(BindException e) {
+        List<ObjectError> allErrors = e.getBindingResult().getAllErrors();
+        log.error("get请求的对象参数校验异常处理 -->" +  getValidExceptionMsg(allErrors));
+        return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR,  getValidExceptionMsg(allErrors));
     }
     // Post请求的对象参数校验异常
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -45,6 +46,21 @@ public class GlobalExceptionHandler {
         log.error("post请求的对象参数校验异常处理 -->" + getValidExceptionMsg(allErrors));
         return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR, getValidExceptionMsg(allErrors));
     }
+    // get请求参数校验
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseResult handleMissingParameterException(MissingServletRequestParameterException ex) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (!"".equals(ex.getParameterName()) && ex.getParameterName().equals("pageNum")) {
+            stringBuilder.append("分页页数不能为空");
+        }
+        if (!"".equals(ex.getParameterName()) && ex.getParameterName().equals("pageSize")) {
+            stringBuilder.append("分页大小不能为空");
+        }
+        if (StringUtils.hasText(stringBuilder.toString())) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR,stringBuilder.toString());
+        }
+        return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR,ex.getMessage());
+    }
 
     // 全局异常处理
     @ExceptionHandler(Exception.class)
@@ -52,7 +68,7 @@ public class GlobalExceptionHandler {
         //打印异常信息
         log.error("全局异常处理 -->" + e.getMessage(),e);
         //从异常对象中获取提示信息封装返回
-        return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR.getCode(),e.getMessage());
+        return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR.getCode(),"系统错误");
     }
 
 
@@ -66,9 +82,10 @@ public class GlobalExceptionHandler {
         if (!CollectionUtils.isEmpty(errors)) {
             errors.forEach(error -> {
                 if (error instanceof FieldError) {
-                    stringBuilder.append((((FieldError)error).getField())).append(";");
+//                    stringBuilder.append((((FieldError)error).getField())).append(";");
+//                } else {
+                    stringBuilder.append(error.getDefaultMessage()).append("; ");
                 }
-                stringBuilder.append(error.getDefaultMessage()).append(";");
             });
         }
         return stringBuilder.toString();

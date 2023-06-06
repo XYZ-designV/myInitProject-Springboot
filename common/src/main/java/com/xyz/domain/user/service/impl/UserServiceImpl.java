@@ -14,6 +14,7 @@ import com.xyz.domain.common.ResponseResult;
 import io.jsonwebtoken.lang.Strings;
 import jdk.internal.org.objectweb.asm.tree.analysis.Value;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -64,7 +65,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity>
 
     @Override
     public ResponseResult addUser(AddUserDTO addUserDTO) {
-
         // 密码加密
         String encode = passwordEncoder.encode(addUserDTO.getPassword());
         addUserDTO.setPassword(encode);
@@ -76,48 +76,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity>
 
     @Override
     public ResponseResult editUser(EditUserDTO editUserDTO) {
-
-        UserEntity userEntity = getById(editUserDTO.getId());
-        if ( null != editUserDTO.getUserName() && editUserDTO.getUserName().length()>1) {
-            userEntity.setUserName(editUserDTO.getUserName());
-        }
-        if ( null != editUserDTO.getNickName() && editUserDTO.getNickName().length()>1) {
-            userEntity.setNickName(editUserDTO.getNickName());
-        }
-        if ( null != editUserDTO.getPhoneNumber() && editUserDTO.getNickName().length()>1) {
-            userEntity.setPhoneNumber(editUserDTO.getPhoneNumber());
-        }
-        if ( null != editUserDTO.getAvatar() && editUserDTO.getAvatar().length()>1) {
-            userEntity.setAvatar(editUserDTO.getAvatar());
-        }
-        if ( null != editUserDTO.getEmail() && editUserDTO.getEmail().length()>1) {
-            userEntity.setEmail(editUserDTO.getEmail());
-        }
-        if ( null != editUserDTO.getGender()) {
-            userEntity.setGender(editUserDTO.getGender());
-        }
-        if (null != editUserDTO.getStatus()) {
-            userEntity.setStatus(editUserDTO.getStatus());
-        }
-        if (null != editUserDTO.getType()) {
-            userEntity.setType(editUserDTO.getType());
-        }
+        UserEntity userEntity = BeanCopyUtils.copyBean(editUserDTO, UserEntity.class);
         updateById(userEntity);
-
         return ResponseResult.okResult();
     }
 
     @Override
     public ResponseResult editPwd(EditPwdDTO editPwdDTO) {
-        String encode;
-        if (null != editPwdDTO.getPassword() && editPwdDTO.getPassword().length() > 5) {
-            encode = passwordEncoder.encode(editPwdDTO.getPassword());
-
-            LambdaUpdateWrapper<UserEntity> updateWrapper = new LambdaUpdateWrapper<>();
-            updateWrapper.eq(UserEntity::getId,editPwdDTO.getId());
-            updateWrapper.set(UserEntity::getPassword,encode);
-            update(null,updateWrapper);
-        }
+        String encode = passwordEncoder.encode(editPwdDTO.getPassword());
+        LambdaUpdateWrapper<UserEntity> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(UserEntity::getId,editPwdDTO.getId());
+        updateWrapper.set(UserEntity::getPassword,encode);
+        update(null,updateWrapper);
         return ResponseResult.okResult();
     }
 

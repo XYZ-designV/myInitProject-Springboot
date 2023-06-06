@@ -5,7 +5,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 
-@Api(tags = "权限表相关接口")
+@Api(tags = "角色权限表相关接口")
 public interface IRole {
 
     @ApiOperation(value = "查询所有权限", notes = "查询所有权限")

@@ -26,15 +26,12 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleEntity>
     @Override
     public ResponseResult all() {
         List<RoleEntity> roleEntities = list();
-
         List<RoleVO> roleVos = BeanCopyUtils.copyBeanList(roleEntities, RoleVO.class);
-
         return ResponseResult.okResult(roleVos);
     }
 
     @Override
     public ResponseResult addRole(AddRoleDTO roleDTO) {
-
         RoleEntity roleEntity = BeanCopyUtils.copyBean(roleDTO, RoleEntity.class);
         save(roleEntity);
         return ResponseResult.okResult();
@@ -42,15 +39,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, RoleEntity>
 
     @Override
     public ResponseResult editRole(EditRoleDTO editRoleDTO) {
-        LambdaUpdateWrapper<RoleEntity> updateWrapper = new LambdaUpdateWrapper<>();
-        updateWrapper.set(null != editRoleDTO.getRoleName(),RoleEntity::getRoleName,editRoleDTO.getRoleName());
-        updateWrapper.set(null != editRoleDTO.getRoleKey(),RoleEntity::getRoleKey,editRoleDTO.getRoleKey());
-        updateWrapper.set(null != editRoleDTO.getRoleSort(),RoleEntity::getRoleSort,editRoleDTO.getRoleSort());
-        updateWrapper.set(null != editRoleDTO.getRemark(),RoleEntity::getRemark,editRoleDTO.getRemark());
-        updateWrapper.set(null != editRoleDTO.getStatus(),RoleEntity::getStatus,editRoleDTO.getStatus());
-        updateWrapper.eq(RoleEntity::getId,editRoleDTO.getId());
-        update(null,updateWrapper);
-
+        RoleEntity roleEntity = BeanCopyUtils.copyBean(editRoleDTO, RoleEntity.class);
+        updateById(roleEntity);
         return ResponseResult.okResult();
     }
 
