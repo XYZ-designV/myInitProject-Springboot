@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <!--用于区分不同应用程序的记录-->
+    <contextName>my-service</contextName>
+    <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径  Linux:/opt/tomcat/logs/java-week -->
+    <property name="LOG_PATH" value="C:/logs" />
+    <!--定义日志文件的输出格式 -->
+    <property name="LOG_PATTERN" value="%red(%d{yyyy-MM-dd HH:mm:ss.SSS})|%green(%level)|%magenta(%thread)|%yellow(%logger{1})|%green(line-%line)|%cyan(%X{traceId})|%m%n"/>
+    <property name="LOG_PATTERN_NO_COLOR" value="%d{yyyy-MM-dd HH:mm:ss.SSS}|%level|%thread|%logger{1}|line-%line|%X{traceId}|%m%n"/>
+
+    <!--定义日志输出编码格式 -->
+    <property name="log.charset" value="UTF-8" />
+    <!--定义日志文件名称，一般一个项目对应一个名-->
+    <property name="LOG_FILE_NAME" value="my_init_project" />
+
+    <!-- 控制台输出 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 输出到文件 -->
+    <appender name="rootAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名 -->
+            <fileNamePattern>${LOG_PATH}/${LOG_FILE_NAME}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!--日志文件保留天数 -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN_NO_COLOR}</pattern>
+<!--            <charset>UTF-8</charset>-->
+        </encoder>
+    </appender>
+
+    <appender name="asyncRootAppender" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="rootAppender" />
+        <queueSize>1024</queueSize>
+        <neverBlock>true</neverBlock>
+        <includeCallerData>true</includeCallerData>
+    </appender>
+
+    <!-- 日志输出级别 -->
+    <root level="INFO">
+        <appender-ref ref="asyncRootAppender" />
+        <appender-ref ref="CONSOLE" />
+    </root>
+</configuration>
