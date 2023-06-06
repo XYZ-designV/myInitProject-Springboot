@@ -1,2 +1,2 @@
 # myInitProject-Springboot
-quickStart-springboot
+quickStart-springboot dev
